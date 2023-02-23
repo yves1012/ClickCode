@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, user-scalable=no">
+    <title>模板</title>
+    <link rel="stylesheet" href="css/frozen.css"/>
+    <style>
+        body > a {
+            display: none;
+        }
+
+        .demo-desc {
+            padding: 5px;
+            font-size: 14px;
+            color: #7CAE23;
+        }
+    </style>
+</head>
+<body style="background-color: #fff">
+<div class="ui-form ui-border-t">
+    <form style="padding: 20px;">
+        <div class="ui-tooltips">
+            <div class="ui-tooltips-cnt ui-border-b demo-desc">
+                版本号: <span id="version"></span>
+            </div>
+        </div>
+        <div class="ui-form-item ui-border-b ">
+            <label>Tag：</label>
+            <input type="text" placeholder="请输入帖子标签信息" id="tag"/>
+        </div>
+        <div class="ui-form-item ui-form-item-checkbox ui-border-b">
+            <label class="ui-checkbox">
+                <input type="checkbox" id="flag">
+            </label>
+            <span>是否从头开始</span>
+        </div>
+        <!-- 两个按钮 -->
+        <div class="" style="padding-top: 25px">
+            <a class="ui-btn-lg " onclick="javascript:save()">保存参数</a>
+        </div>
+        <div class="" style="padding-top: 5px">
+            <a class="ui-btn-lg ui-btn-primary" onclick="javascript:start()">启动脚本</a>
+        </div>
+    </form>
+</div>
+<script src="js/jquery.min.js"></script>
+<script>
+    // 隐藏开始按钮
+    window.ec.hideStartBtn();
+    $("#version").html(window.ec.call("getVersion", null));
+
+    // 保存参数的函数
+    function save() {
+        let config = {};
+        let node = window.document.all;
+        for (let i = 0; i < node.length; i++) {
+            let id = node[i].getAttribute("id");
+            if (id) {
+                let type = node[i].getAttribute("type")
+                let tmp_id = "#" + id
+                if (type === "checkbox" || type === "radio") {
+                    config[id] = $(tmp_id).prop("checked");
+                } else if (type === "number") {
+                    config[id] = Number($(tmp_id).val());
+                } else {
+                    config[id] = $(tmp_id).val();
+                }
+            }
+        }
+        window.ec.saveConfig("config", JSON.stringify(config));
+        window.ec.toast("参数保存成功");
+    }
+
+    function start() {
+        save();
+        window.ec.toast("开始脚本");
+        window.ec.start();
+    }
+</script>
+</body>
+</html>
